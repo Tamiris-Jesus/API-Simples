@@ -5,9 +5,11 @@ import java.util.List;
 
 import br.edu.ifsp.dao.CargoDao;
 import br.edu.ifsp.dao.DepartamentoDao;
+import br.edu.ifsp.dao.FuncionarioDao;
 import br.edu.ifsp.model.cargo.Cargo;
 import br.edu.ifsp.model.cargo.CargoValidacao;
 import br.edu.ifsp.model.departamento.Departamento;
+import br.edu.ifsp.model.funcionario.Funcionario;
 
 public class CargoController {
 	private Cargo cargo;
@@ -52,4 +54,8 @@ public class CargoController {
     	// Retorna a excecao lancada ao recuperar os departamentos (ao abrir a interface "Cadastro de Cargo").
     	return new DepartamentoDao().getExcecao();
     }
+    
+    public List<Cargo> consultaCargos() {
+    	return new CargoDao().consultaCargos();
+		}
 }

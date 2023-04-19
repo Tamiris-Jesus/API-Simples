@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ifsp.dao.DepartamentoDao;
+import br.edu.ifsp.dao.FuncionarioDao;
 import br.edu.ifsp.model.departamento.Departamento;
 import br.edu.ifsp.model.departamento.DepartamentoValidacao;
 import br.edu.ifsp.model.funcionario.Funcionario;
@@ -52,6 +53,10 @@ public class DepartamentoController {
     public List<Funcionario> recuperaFuncionarios() {
     	// Recupera os cargos cadastrados no banco de dados para que sejam exibidos no campo Cargo.
 		return new DepartamentoDao().recuperaFuncionarios();
+    }
+    
+    public List<Departamento> consultaDepartamentos() {
+		return new DepartamentoDao().consultaDepartamentos();
     }
 }
 

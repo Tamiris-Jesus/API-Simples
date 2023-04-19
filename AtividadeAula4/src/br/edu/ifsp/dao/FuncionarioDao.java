@@ -61,4 +61,65 @@ public class FuncionarioDao extends GenericDao {
 	public String getExcecao() {
 		return excecao;
 	}
+
+
+
+
+public List<Funcionario> consultaFuncionarios() {
+	Funcionario funcionario;
+    Cargo cargo;
+    List<Funcionario> funcionarios = new ArrayList<Funcionario>();
+    List<Cargo> cargos = new ArrayList<Cargo>();
+    
+    String instrucaoSql = "SELECT * FROM FUNCIONARIO";
+	PreparedStatement comando;
+	ResultSet registros;
+
+    try {
+    	excecao = ConnectionDatabase.conectaBd(); // Abre a conex�o com o banco de dados.
+    	if (excecao == null) {
+            // Obt�m os dados de conex�o com o banco de dados e prepara a instru��o SQL.
+            comando = ConnectionDatabase.getConexaoBd().prepareStatement(instrucaoSql);
+            
+            // Executa a instru��o SQL e retorna os dados ao objeto ResultSet.
+            registros = comando.executeQuery();
+            
+            if (registros.next()) { // Se for retornado pelo menos um registro.
+                registros.beforeFirst(); // Retorna o cursor para antes do 1� registro.
+                
+                // Recupera os cargos cadastrados no banco de dados para acessar a descri��o dos cargos.
+	            cargos = recuperaCargos();
+	            
+    	        while (registros.next()) {
+                    // Atribui os dados do funcion�rio ao objeto Funcionario por meio dos m�todos set e
+                    // adiciona este objeto ao ArrayList funcionarios.
+    	            funcionario = new Funcionario();
+    	            funcionario.setId(registros.getInt("Id"));
+    	            funcionario.setNome(registros.getString("Nome"));
+    	            funcionario.setSexo(registros.getString("Sexo").charAt(0));
+    	            funcionario.setSalario(registros.getBigDecimal("Salario"));
+    	            funcionario.setPlanoSaude(registros.getBoolean("PlanoSaude"));
+    	            // Atribui o id do cargo ao objeto Cargo por meio do m�todo set.
+    	            cargo = new Cargo();
+    	            cargo.setId(registros.getInt("IdCargo"));
+    				for (Cargo c : cargos)
+    					if (c.getId() == cargo.getId()) {
+    						cargo.setDescricao(c.getDescricao());
+    						break;
+    					}
+    	            funcionario.setCargo(cargo);
+    	            funcionarios.add(funcionario);
+    	        }
+    	    }
+            registros.close(); // Libera os recursos usados pelo objeto ResultSet.
+            comando.close(); // Libera os recursos usados pelo objeto PreparedStatement.
+            // Libera os recursos usados pelo objeto Connection e fecha a conex�o com o banco de dados.
+            ConnectionDatabase.getConexaoBd().close();
+        }
+    } catch (Exception e) {
+    	excecao = "Tipo de Exce��o: " + e.getClass().getSimpleName() + "\nMensagem: " + e.getMessage();
+    	funcionarios = null; // Caso ocorra qualquer exce��o.
+    }
+    return funcionarios; // Retorna o ArrayList de objetos Funcion�rio.
+}
 }
